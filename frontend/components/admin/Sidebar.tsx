@@ -163,28 +163,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           </ul>
         </nav>
 
-        {/* Footer - Portal Link & User Info */}
+        {/* Footer - User Info */}
         <div className="border-t border-[#e5e7eb] p-3 space-y-2">
-          {/* Back to Portal */}
-          <Link
-            href="/"
-            className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#6b7280] hover:bg-[#f9fafb] hover:text-[#374151] transition-all group ${
-              collapsed ? 'justify-center' : ''
-            }`}
-          >
-            <span className="flex-shrink-0 text-[#9ca3af] group-hover:text-[#6b7280]">
-              <Icons.ArrowLeft />
-            </span>
-            {!collapsed && <span className="font-medium text-sm">Kembali ke Portal</span>}
-            {collapsed && (
-              <span
-                className="absolute left-[72px] px-3 py-1.5 bg-[#1a1d23] text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50"
-              >
-                Kembali ke Portal
-              </span>
-            )}
-          </Link>
-
           {/* User Info */}
           <div
             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#f9fafb] ${
@@ -294,7 +274,7 @@ export function MobileSidebarOverlay({
           {/* Footer */}
           <div className="border-t border-[#e5e7eb] p-3 space-y-2">
             <Link
-              href="/"
+              href="/dashboard"
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#6b7280] hover:bg-[#f9fafb] hover:text-[#374151] transition-all"
             >
               <span className="flex-shrink-0 text-[#9ca3af]">

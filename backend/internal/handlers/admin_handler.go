@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"hospital-reservation/internal/middleware"
 	"hospital-reservation/internal/models"
 	"hospital-reservation/internal/services"
 
@@ -57,12 +58,10 @@ func (h *AdminHandler) GetDoctors(c *fiber.Ctx) error {
 	})
 }
 
-func (h *AdminHandler) RegisterRoutes(app *fiber.App, jwtMiddleware interface{}) {
-	admin := app.Group("/api/admin", func(c *fiber.Ctx) error {
-		// TODO: Add admin role verification
-		// For now, allow all authenticated users
-		return c.Next()
-	})
+func (h *AdminHandler) RegisterRoutes(app *fiber.App, jwtMiddleware *middleware.JWTMiddleware) {
+	admin := app.Group("/api/admin")
+	admin.Use(jwtMiddleware.Authenticate())
+	admin.Use(jwtMiddleware.RequireAdmin())
 
 	admin.Get("/stats", h.GetStats)
 	admin.Get("/reservations", h.GetReservations)

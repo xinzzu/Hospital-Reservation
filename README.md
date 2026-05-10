@@ -14,6 +14,8 @@ Sistem reservasi antrean rumah sakit berbasis web yang memungkinkan pasien untuk
 - ✅ **Reservasi Online** dengan validasi jadwal
 - ✅ **Tiket Digital** dengan QR code
 - ✅ **Monitoring Status** reservasi real-time
+- ✅ **Admin Dashboard** untuk staff rumah sakit
+- ✅ **Admin Dashboard** untuk staff rumah sakit
 
 ## 🛠️ Tech Stack
 
@@ -149,6 +151,23 @@ npm run dev
 | GET | `/api/reservations/:code` | Cek tiket by queue_code |
 | PATCH | `/api/reservations/:code/status` | Update status (admin) |
 
+### Admin API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/stats` | Dashboard statistics |
+| GET | `/api/admin/reservations` | List semua reservasi (filterable) |
+| GET | `/api/admin/doctors` | List semua dokter |
+
+### Admin API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/stats` | Dashboard statistics |
+| GET | `/api/admin/reservations` | List semua reservasi (filterable) |
+| GET | `/api/admin/doctors` | List semua dokter |
+
+
 ## 📋 Queue Code Format
 
 Format: `[KODE-DOKTER][TANGGAL][NOMOR]`
@@ -161,12 +180,21 @@ Format: `[KODE-DOKTER][TANGGAL][NOMOR]`
 
 ## 👤 Default Test Accounts
 
+### Admin Account
+| Email | Password | Role |
+|-------|----------|------|
+| admin@medicare.co.id | admin123 | Administrator |
+
+**Akses:** http://localhost:3000/admin/login
+
+### Doctor Accounts
 | Email | Password | Role |
 |-------|----------|------|
 | sarah@hospital.com | doctor123 | Dokter |
 | ahmad@hospital.com | doctor123 | Dokter |
 | lisa@hospital.com | doctor123 | Dokter |
 
+### Patient Account
 > 💡 Pasien dapat mendaftar langsung melalui UI pada halaman `/register`
 
 ## 🗄️ Database Schema

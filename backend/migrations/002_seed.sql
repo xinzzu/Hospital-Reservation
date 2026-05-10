@@ -1,6 +1,18 @@
 -- Hospital Reservation System Seed Data
 -- Version: 1.0
 
+-- ============================================
+-- ADMIN USER (for admin panel access)
+-- ============================================
+-- Password: admin123 (bcrypt hash: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.c9jF.L7aFnY0o7hF7y)
+INSERT INTO users (name, email, password_hash, phone, role)
+VALUES ('Administrator', 'admin@medicare.co.id', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.c9jF.L7aFnY0o7hF7y', '081234567800', 'admin')
+ON CONFLICT (email) DO NOTHING;
+
+-- ============================================
+-- HOSPITAL INFO
+-- ============================================
+
 -- Insert hospital info
 INSERT INTO hospital_info (name, address, phone, emergency_phone, email, about, facilities, operating_hours)
 VALUES (

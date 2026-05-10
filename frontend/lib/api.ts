@@ -102,4 +102,71 @@ export const reservationsAPI = {
     api.patch(`/api/reservations/${code}/status`, { status }),
 };
 
+// Admin Stats
+interface AdminStats {
+  total_reservations: number;
+  today_reservations: number;
+  waiting_count: number;
+  called_count: number;
+  completed_count: number;
+  cancelled_count: number;
+  total_doctors: number;
+  total_patients: number;
+  active_reservations: number;
+}
+
+// Admin Reservation Filter
+interface AdminReservationFilter {
+  status?: 'menunggu' | 'dipanggil' | 'selesai' | 'batal';
+  date?: string;
+  doctor_id?: number;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+// Reservation with details
+interface ReservationWithDetails {
+  id: number;
+  patient_id: number;
+  doctor_id: number;
+  schedule_id: number;
+  reservation_date: string;
+  queue_number: number;
+  queue_code: string;
+  status: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+  doctor_name: string;
+  doctor_specialization: string;
+  doctor_room: string;
+  schedule_start_time: string;
+  schedule_end_time: string;
+  patient_name?: string;
+  patient_phone?: string;
+}
+
+// Doctor
+interface Doctor {
+  id: number;
+  user_id: number;
+  name: string;
+  specialization: string;
+  room: string;
+  bio: string;
+  photo_url: string;
+  created_at: string;
+}
+
+// Admin API
+export const adminAPI = {
+  getStats: (): Promise<{ data: AdminStats }> =>
+    api.get('/api/admin/stats'),
+  getReservations: (params?: AdminReservationFilter) =>
+    api.get('/api/admin/reservations', { params }),
+  getDoctors: (): Promise<{ data: { doctors: Doctor[] } }> =>
+    api.get('/api/admin/doctors'),
+};
+
 export default api;

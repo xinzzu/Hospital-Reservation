@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import Sidebar, { MobileSidebarOverlay } from '@/components/admin/Sidebar';
@@ -46,6 +46,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isAuthenticated, logout, _hasHydrated } = useAuthStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -59,11 +60,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     if (!mounted) return;
     if (!_hasHydrated) return;
 
-    // Auth check - redirect to login if not authenticated
+    // Skip auth check for login page - let the login page render
+    if (pathname === '/admin/login') return;
+
+    // Auth check - redirect to admin login if not authenticated
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push('/admin/login');
     }
-  }, [mounted, _hasHydrated, isAuthenticated, router]);
+  }, [mounted, _hasHydrated, isAuthenticated, pathname, router]);
 
   const handleToggleSidebar = () => {
     if (typeof window !== 'undefined' && window.innerWidth < 1024) {
@@ -75,7 +79,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push('/admin/login');
   };
 
   // Loading state while hydrating auth store
@@ -90,6 +94,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </div>
     );
+  }
+
+  // Skip auth gate for login page - let it render
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
   }
 
   // If not authenticated, don't render content (will redirect)

@@ -89,3 +89,16 @@ func (m *JWTMiddleware) OptionalAuth() fiber.Handler {
 		return c.Next()
 	}
 }
+
+// RequireAdmin checks if user has admin role
+func (m *JWTMiddleware) RequireAdmin() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		role := c.Locals("role")
+		if role == nil || role.(string) != "admin" {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"error": "Access denied. Admin privileges required.",
+			})
+		}
+		return c.Next()
+	}
+}
