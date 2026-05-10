@@ -101,4 +101,38 @@ type ReservationWithDetails struct {
 	DoctorRoom        string `json:"doctor_room"`
 	ScheduleStartTime string `json:"schedule_start_time"`
 	ScheduleEndTime   string `json:"schedule_end_time"`
+	PatientName       string `json:"patient_name,omitempty"`
+	PatientPhone      string `json:"patient_phone,omitempty"`
+}
+
+// AdminStats represents dashboard statistics
+type AdminStats struct {
+	TotalReservations  int `json:"total_reservations"`
+	TodayReservations  int `json:"today_reservations"`
+	WaitingCount       int `json:"waiting_count"`
+	CalledCount        int `json:"called_count"`
+	CompletedCount     int `json:"completed_count"`
+	CancelledCount     int `json:"cancelled_count"`
+	TotalDoctors       int `json:"total_doctors"`
+	TotalPatients      int `json:"total_patients"`
+	ActiveReservations int `json:"active_reservations"`
+}
+
+// AdminReservationFilter for filtering reservations in admin
+type AdminReservationFilter struct {
+	Status   string `query:"status"`
+	Date     string `query:"date"`
+	DoctorID int    `query:"doctor_id"`
+	Search   string `query:"search"`
+	Page     int    `query:"page"`
+	Limit    int    `query:"limit"`
+}
+
+// PaginatedResponse for admin list endpoints
+type PaginatedResponse struct {
+	Data       interface{} `json:"data"`
+	Page       int         `json:"page"`
+	Limit      int         `json:"limit"`
+	Total      int         `json:"total"`
+	TotalPages int         `json:"total_pages"`
 }
