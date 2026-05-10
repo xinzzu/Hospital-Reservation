@@ -23,7 +23,7 @@ func (r *ReservationRepository) Create(res *models.Reservation) error {
 	`
 	return r.db.QueryRow(query,
 		res.PatientID, res.DoctorID, res.ScheduleID, res.ReservationDate,
-		res.QueueNumber, res.QueueCode, "menunggu", res.Notes,
+		res.QueueNumber, res.QueueCode, models.StatusWaiting, res.Notes,
 	).Scan(&res.ID, &res.CreatedAt, &res.UpdatedAt)
 }
 

@@ -2,6 +2,21 @@ package models
 
 import "time"
 
+// Reservation status constants
+const (
+	StatusWaiting    = "menunggu"
+	StatusCalled    = "dipanggil"
+	StatusCompleted = "selesai"
+	StatusCancelled = "batal"
+)
+
+// User roles
+const (
+	RoleAdmin   = "admin"
+	RolePatient = "pasien"
+	RoleDoctor  = "dokter"
+)
+
 type User struct {
 	ID           int       `json:"id"`
 	Name         string    `json:"name"`

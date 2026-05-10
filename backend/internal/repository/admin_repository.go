@@ -26,15 +26,15 @@ func (r *AdminRepository) GetStats() (*models.AdminStats, error) {
 	// Today's reservations
 	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE reservation_date = $1`, today).Scan(&stats.TodayReservations)
 
-	// Status counts
-	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = 'menunggu'`).Scan(&stats.WaitingCount)
-	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = 'dipanggil'`).Scan(&stats.CalledCount)
-	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = 'selesai'`).Scan(&stats.CompletedCount)
-	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = 'batal'`).Scan(&stats.CancelledCount)
+	// Status counts using constants
+	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusWaiting).Scan(&stats.WaitingCount)
+	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusCalled).Scan(&stats.CalledCount)
+	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusCompleted).Scan(&stats.CompletedCount)
+	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusCancelled).Scan(&stats.CancelledCount)
 
 	// Counts
 	r.db.QueryRow(`SELECT COUNT(*) FROM doctors WHERE is_active = true`).Scan(&stats.TotalDoctors)
-	r.db.QueryRow(`SELECT COUNT(*) FROM users WHERE role = 'pasien'`).Scan(&stats.TotalPatients)
+	r.db.QueryRow(`SELECT COUNT(*) FROM users WHERE role = $1`, models.RolePatient).Scan(&stats.TotalPatients)
 
 	// Active = waiting or called
 	stats.ActiveReservations = stats.WaitingCount + stats.CalledCount
