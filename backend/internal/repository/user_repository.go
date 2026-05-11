@@ -48,3 +48,15 @@ func (r *UserRepository) FindByID(id int) (*models.User, error) {
 	}
 	return user, nil
 }
+
+func (r *UserRepository) UpdateProfile(id int, name, phone string) error {
+	query := `UPDATE users SET name = $1, phone = $2, updated_at = NOW() WHERE id = $3`
+	_, err := r.db.Exec(query, name, phone, id)
+	return err
+}
+
+func (r *UserRepository) UpdatePassword(id int, hashedPassword string) error {
+	query := `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`
+	_, err := r.db.Exec(query, hashedPassword, id)
+	return err
+}

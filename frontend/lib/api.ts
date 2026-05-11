@@ -70,6 +70,8 @@ export const authAPI = {
     api.post('/api/auth/login', data),
   getProfile: () =>
     api.get('/api/auth/me'),
+  forgotPassword: (email: string) => api.post('/api/auth/forgot-password', { email }),
+  resetPassword: (token: string, newPassword: string) => api.post('/api/auth/reset-password', { token, new_password: newPassword }),
 };
 
 // Hospital API
@@ -167,6 +169,29 @@ export const adminAPI = {
     api.get('/api/admin/reservations', { params }),
   getDoctors: (): Promise<{ data: { doctors: Doctor[] } }> =>
     api.get('/api/admin/doctors'),
+  getPatients: (params?: { page?: number; limit?: number; search?: string; status?: string }) =>
+    api.get('/api/admin/patients', { params }),
+  updatePatient: (id: number, data: { name: string; phone: string }) =>
+    api.put(`/api/admin/patients/${id}`, data),
+  deactivatePatient: (id: number) =>
+    api.post(`/api/admin/patients/${id}/deactivate`),
+  updateDoctor: (id: number, data: { name: string; specialization: string; room: string; bio: string }) =>
+    api.put(`/api/admin/doctors/${id}`, data),
+  deleteDoctor: (id: number) =>
+    api.delete(`/api/admin/doctors/${id}`),
+  createSchedule: (doctorId: number, data: { day_of_week: number; start_time: string; end_time: string; max_patients: number; is_active: boolean }) =>
+    api.post(`/api/admin/doctors/${doctorId}/schedules`, data),
+  updateSchedule: (scheduleId: number, data: { day_of_week: number; start_time: string; end_time: string; max_patients: number; is_active: boolean }) =>
+    api.put(`/api/admin/schedules/${scheduleId}`, data),
+  deleteSchedule: (scheduleId: number) =>
+    api.delete(`/api/admin/schedules/${scheduleId}`),
+};
+
+// User API (profile)
+export const userAPI = {
+  getProfile: () => api.get('/api/users/profile'),
+  updateProfile: (data: { name: string; phone: string }) => api.put('/api/users/profile', data),
+  changePassword: (data: { old_password: string; new_password: string }) => api.put('/api/users/password', data),
 };
 
 export default api;

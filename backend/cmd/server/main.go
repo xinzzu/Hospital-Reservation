@@ -35,12 +35,16 @@ func main() {
 	reservationRepo := repository.NewReservationRepository(db)
 	hospitalRepo := repository.NewHospitalRepository(db)
 	adminRepo := repository.NewAdminRepository(db)
+	patientRepo := repository.NewPatientRepository(db)
+	passwordResetRepo := repository.NewPasswordResetRepository(db)
 
 	// Initialize services
-	authService := services.NewAuthService(userRepo, cfg)
+	authService := services.NewAuthService(userRepo, passwordResetRepo, cfg)
 	doctorService := services.NewDoctorService(doctorRepo)
 	reservationService := services.NewReservationService(reservationRepo, doctorRepo)
 	adminService := services.NewAdminService(adminRepo)
+	patientService := services.NewPatientService(patientRepo)
+	userService := services.NewUserService(userRepo)
 
 	// Initialize middleware
 	jwtMiddleware := middleware.NewJWTMiddleware(cfg.JWTSecret)
@@ -50,7 +54,9 @@ func main() {
 	doctorHandler := handlers.NewDoctorHandler(doctorService)
 	reservationHandler := handlers.NewReservationHandler(reservationService)
 	hospitalHandler := handlers.NewHospitalHandler(hospitalRepo)
-	adminHandler := handlers.NewAdminHandler(adminService)
+	patientHandler := handlers.NewPatientHandler(patientService)
+	userHandler := handlers.NewUserHandler(userService)
+	adminHandler := handlers.NewAdminHandler(adminService, doctorService, patientHandler)
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
@@ -78,6 +84,7 @@ func main() {
 	doctorHandler.RegisterRoutes(app, jwtMiddleware)
 	reservationHandler.RegisterRoutes(app, jwtMiddleware)
 	hospitalHandler.RegisterRoutes(app)
+	userHandler.RegisterRoutes(app, jwtMiddleware)
 	adminHandler.RegisterRoutes(app, jwtMiddleware)
 
 	// Start server

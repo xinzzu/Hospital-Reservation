@@ -74,6 +74,11 @@ const menuItems: MenuItem[] = [
     href: '/admin/doctors',
     icon: <Icons.Stethoscope />,
   },
+  {
+    name: 'Kelola Pasien',
+    href: '/admin/patients',
+    icon: <Icons.User />,
+  },
 ];
 
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {

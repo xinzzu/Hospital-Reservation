@@ -111,3 +111,53 @@ func (r *DoctorRepository) GetDoctorCode(doctorID int) (string, error) {
 	err := r.db.QueryRow(query, doctorID).Scan(&code)
 	return code, err
 }
+
+func (r *DoctorRepository) Update(id int, name, specialization, room, bio string) error {
+	query := `UPDATE doctors SET name = $1, specialization = $2, room = $3, bio = $4 WHERE id = $5`
+	_, err := r.db.Exec(query, name, specialization, room, bio, id)
+	return err
+}
+
+func (r *DoctorRepository) Delete(id int) error {
+	query := `UPDATE doctors SET is_active = FALSE WHERE id = $1`
+	_, err := r.db.Exec(query, id)
+	return err
+}
+
+func (r *DoctorRepository) Create(name, specialization, room, bio, photoURL string, userID int) (*models.Doctor, error) {
+	query := `INSERT INTO doctors (name, specialization, room, bio, photo_url, user_id)
+			  VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, user_id, name, specialization, room, bio, photo_url, created_at`
+	var doctor models.Doctor
+	err := r.db.QueryRow(query, name, specialization, room, bio, photoURL, userID).Scan(
+		&doctor.ID, &doctor.UserID, &doctor.Name, &doctor.Specialization,
+		&doctor.Room, &doctor.Bio, &doctor.PhotoURL, &doctor.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &doctor, nil
+}
+
+func (r *DoctorRepository) AddSchedule(doctorID int, dayOfWeek int, startTime, endTime string, maxPatients int) (*models.Schedule, error) {
+	query := `INSERT INTO schedules (doctor_id, day_of_week, start_time, end_time, max_patients)
+			  VALUES ($1, $2, $3, $4, $5) RETURNING id, doctor_id, day_of_week, start_time::text, end_time::text, max_patients, is_active`
+	var schedule models.Schedule
+	err := r.db.QueryRow(query, doctorID, dayOfWeek, startTime, endTime, maxPatients).Scan(
+		&schedule.ID, &schedule.DoctorID, &schedule.DayOfWeek,
+		&schedule.StartTime, &schedule.EndTime, &schedule.MaxPatients, &schedule.IsActive)
+	if err != nil {
+		return nil, err
+	}
+	return &schedule, nil
+}
+
+func (r *DoctorRepository) UpdateSchedule(scheduleID int, dayOfWeek int, startTime, endTime string, maxPatients int, isActive bool) error {
+	query := `UPDATE schedules SET day_of_week = $1, start_time = $2, end_time = $3, max_patients = $4, is_active = $5 WHERE id = $6`
+	_, err := r.db.Exec(query, dayOfWeek, startTime, endTime, maxPatients, isActive, scheduleID)
+	return err
+}
+
+func (r *DoctorRepository) DeleteSchedule(scheduleID int) error {
+	query := `DELETE FROM schedules WHERE id = $1`
+	_, err := r.db.Exec(query, scheduleID)
+	return err
+}

@@ -118,3 +118,27 @@ func (s *DoctorService) GetDayName(day int) string {
 	}
 	return strconv.Itoa(day)
 }
+
+// Admin methods
+func (s *DoctorService) UpdateDoctor(id int, name, specialization, room, bio string) error {
+	return s.doctorRepo.Update(id, name, specialization, room, bio)
+}
+
+func (s *DoctorService) DeleteDoctor(id int) error {
+	return s.doctorRepo.Delete(id)
+}
+
+func (s *DoctorService) AddSchedule(doctorID int, dayOfWeek int, startTime, endTime string, maxPatients int) (*models.Schedule, error) {
+	if dayOfWeek < 0 || dayOfWeek > 6 {
+		return nil, errors.New("day_of_week must be between 0 and 6")
+	}
+	return s.doctorRepo.AddSchedule(doctorID, dayOfWeek, startTime, endTime, maxPatients)
+}
+
+func (s *DoctorService) UpdateSchedule(scheduleID int, dayOfWeek int, startTime, endTime string, maxPatients int, isActive bool) error {
+	return s.doctorRepo.UpdateSchedule(scheduleID, dayOfWeek, startTime, endTime, maxPatients, isActive)
+}
+
+func (s *DoctorService) DeleteSchedule(scheduleID int) error {
+	return s.doctorRepo.DeleteSchedule(scheduleID)
+}

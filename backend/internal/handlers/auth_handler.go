@@ -96,4 +96,62 @@ func (h *AuthHandler) RegisterRoutes(app *fiber.App) {
 	auth.Post("/register", h.Register)
 	auth.Post("/login", h.Login)
 	auth.Get("/me", h.jwtMiddleware.Authenticate(), h.GetProfile)
+	auth.Post("/forgot-password", h.ForgotPassword)
+	auth.Post("/reset-password", h.ResetPassword)
+}
+
+func (h *AuthHandler) ForgotPassword(c *fiber.Ctx) error {
+	var body struct {
+		Email string `json:"email"`
+	}
+
+	if err := c.BodyParser(&body); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body",
+		})
+	}
+
+	if body.Email == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Email is required",
+		})
+	}
+
+	response, err := h.authService.ForgotPassword(body.Email)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(response)
+}
+
+func (h *AuthHandler) ResetPassword(c *fiber.Ctx) error {
+	var body struct {
+		Token       string `json:"token"`
+		NewPassword string `json:"new_password"`
+	}
+
+	if err := c.BodyParser(&body); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid request body",
+		})
+	}
+
+	if body.Token == "" || body.NewPassword == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Token and new password are required",
+		})
+	}
+
+	if err := h.authService.ResetPassword(body.Token, body.NewPassword); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Password reset successfully",
+	})
 }
