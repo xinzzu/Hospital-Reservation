@@ -32,8 +32,8 @@ func (r *AdminRepository) GetStats() (*models.AdminStats, error) {
 	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusCompleted).Scan(&stats.CompletedCount)
 	r.db.QueryRow(`SELECT COUNT(*) FROM reservations WHERE status = $1`, models.StatusCancelled).Scan(&stats.CancelledCount)
 
-	// Counts
-	r.db.QueryRow(`SELECT COUNT(*) FROM doctors WHERE is_active = true`).Scan(&stats.TotalDoctors)
+	// Counts - count all doctors (matches doctors list page)
+	r.db.QueryRow(`SELECT COUNT(*) FROM doctors`).Scan(&stats.TotalDoctors)
 	r.db.QueryRow(`SELECT COUNT(*) FROM users WHERE role = $1`, models.RolePatient).Scan(&stats.TotalPatients)
 
 	// Active = waiting or called
@@ -53,7 +53,7 @@ func (r *AdminRepository) GetReservations(filter *models.AdminReservationFilter)
 
 	// Build query
 	var conditions []string
-	var args []interface{}
+	var args []any
 	argCount := 1
 
 	if filter.Status != "" {

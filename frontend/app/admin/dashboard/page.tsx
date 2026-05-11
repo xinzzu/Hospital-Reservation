@@ -147,8 +147,8 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 
 // Quick actions data
 const quickActions = [
-  { id: 'reservasi', label: 'Kelola Reservasi', icon: Icons.List, href: '/admin/reservasi' },
-  { id: 'dokter', label: 'Kelola Dokter', icon: Icons.Stethoscope, href: '/admin/dokter' },
+  { id: 'reservasi', label: 'Kelola Reservasi', icon: Icons.List, href: '/admin/reservations' },
+  { id: 'dokter', label: 'Kelola Dokter', icon: Icons.Stethoscope, href: '/admin/doctors' },
 ];
 
 export default function AdminDashboardPage() {
