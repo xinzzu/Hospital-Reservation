@@ -53,6 +53,24 @@ func (h *AdminHandler) GetReservations(c *fiber.Ctx) error {
 	return c.JSON(result)
 }
 
+func (h *AdminHandler) GetReservationDetail(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid reservation ID",
+		})
+	}
+
+	detail, err := h.adminService.GetReservationDetail(id)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Reservation not found",
+		})
+	}
+
+	return c.JSON(detail)
+}
+
 func (h *AdminHandler) GetDoctors(c *fiber.Ctx) error {
 	doctors, err := h.adminService.GetDoctors()
 	if err != nil {
@@ -170,6 +188,7 @@ func (h *AdminHandler) RegisterRoutes(app *fiber.App, jwtMiddleware *middleware.
 
 	admin.Get("/stats", h.GetStats)
 	admin.Get("/reservations", h.GetReservations)
+	admin.Get("/reservations/:id", h.GetReservationDetail)
 	admin.Get("/doctors", h.GetDoctors)
 	admin.Put("/doctors/:id", h.UpdateDoctor)
 	admin.Delete("/doctors/:id", h.DeleteDoctor)

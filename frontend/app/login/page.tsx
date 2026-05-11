@@ -155,7 +155,12 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
-              <label htmlFor="password" className="label">Password</label>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="label">Password</label>
+                <Link href="/forgot-password" className="text-sm text-[#0d9488] hover:text-[#0f766e] transition-colors">
+                  Lupa password?
+                </Link>
+              </div>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9ca3af]">
                   <Icons.Lock />

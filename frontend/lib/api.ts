@@ -102,6 +102,8 @@ export const reservationsAPI = {
     api.get(`/api/reservations/${code}`),
   updateStatus: (code: string, status: string) =>
     api.patch(`/api/reservations/${code}/status`, { status }),
+  getReservationDetail: (id: number) =>
+    api.get(`/api/admin/reservations/${id}`),
 };
 
 // Admin Stats

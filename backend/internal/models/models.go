@@ -151,3 +151,51 @@ type PaginatedResponse struct {
 	Total      int         `json:"total"`
 	TotalPages int         `json:"total_pages"`
 }
+
+// StatusHistory for reservation status change tracking
+type StatusHistory struct {
+	ID         int    `json:"id"`
+	OldStatus  string `json:"old_status"`
+	NewStatus  string `json:"new_status"`
+	ChangedBy  string `json:"changed_by"`
+	ChangedAt  string `json:"changed_at"`
+	Notes      string `json:"notes"`
+}
+
+// ReservationDetail with full information
+type ReservationDetail struct {
+	ID              int            `json:"id"`
+	QueueCode       string        `json:"queue_code"`
+	QueueNumber     int           `json:"queue_number"`
+	Status          string        `json:"status"`
+	ReservationDate string        `json:"reservation_date"`
+	Notes           string        `json:"notes"`
+	CreatedAt       string        `json:"created_at"`
+	UpdatedAt       string        `json:"updated_at"`
+	Patient         PatientInfo   `json:"patient"`
+	Doctor          DoctorInfo    `json:"doctor"`
+	Schedule        ScheduleInfo  `json:"schedule"`
+	StatusHistory   []StatusHistory `json:"status_history"`
+}
+
+type PatientInfo struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Phone string `json:"phone"`
+}
+
+type DoctorInfo struct {
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Specialization string `json:"specialization"`
+	Room           string `json:"room"`
+	PhotoURL       string `json:"photo_url"`
+}
+
+type ScheduleInfo struct {
+	ID         int    `json:"id"`
+	DayOfWeek  int    `json:"day_of_week"`
+	StartTime  string `json:"start_time"`
+	EndTime    string `json:"end_time"`
+}

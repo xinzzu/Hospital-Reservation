@@ -37,3 +37,7 @@ func (s *AdminService) GetReservations(filter *models.AdminReservationFilter) (*
 func (s *AdminService) GetDoctors() ([]models.Doctor, error) {
 	return s.adminRepo.GetAllDoctors()
 }
+
+func (s *AdminService) GetReservationDetail(id int) (*models.ReservationDetail, error) {
+	return s.adminRepo.GetReservationDetail(id)
+}

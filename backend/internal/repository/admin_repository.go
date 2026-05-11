@@ -140,6 +140,44 @@ func (r *AdminRepository) GetReservations(filter *models.AdminReservationFilter)
 	return reservations, total, nil
 }
 
+func (r *AdminRepository) GetReservationDetail(id int) (*models.ReservationDetail, error) {
+	query := `
+		SELECT r.id, r.queue_code, r.queue_number, r.status, r.reservation_date,
+			   r.notes, r.created_at, r.updated_at,
+			   p.id, p.name, p.email, COALESCE(p.phone, '') as phone,
+			   d.id, d.name, d.specialization, d.room, COALESCE(d.photo_url, '') as photo_url,
+			   s.id, s.day_of_week, s.start_time::text, s.end_time::text
+		FROM reservations r
+		JOIN users p ON r.patient_id = p.id
+		JOIN doctors d ON r.doctor_id = d.id
+		JOIN schedules s ON r.schedule_id = s.id
+		WHERE r.id = $1
+	`
+
+	var detail models.ReservationDetail
+	var p models.PatientInfo
+	var doc models.DoctorInfo
+	var sched models.ScheduleInfo
+
+	err := r.db.QueryRow(query, id).Scan(
+		&detail.ID, &detail.QueueCode, &detail.QueueNumber, &detail.Status, &detail.ReservationDate,
+		&detail.Notes, &detail.CreatedAt, &detail.UpdatedAt,
+		&p.ID, &p.Name, &p.Email, &p.Phone,
+		&doc.ID, &doc.Name, &doc.Specialization, &doc.Room, &doc.PhotoURL,
+		&sched.ID, &sched.DayOfWeek, &sched.StartTime, &sched.EndTime,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	detail.Patient = p
+	detail.Doctor = doc
+	detail.Schedule = sched
+	detail.StatusHistory = []models.StatusHistory{}
+
+	return &detail, nil
+}
+
 func (r *AdminRepository) GetAllDoctors() ([]models.Doctor, error) {
 	query := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at
 		FROM doctors ORDER BY name`
