@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface ScheduleFormData {
   day_of_week: number;
@@ -37,12 +38,18 @@ const DAYS = [
 ];
 
 export default function ScheduleForm({ schedule, onSubmit, onClose, loading }: ScheduleFormProps) {
+  const [mounted, setMounted] = useState(false);
   const [dayOfWeek, setDayOfWeek] = useState(0);
   const [startTime, setStartTime] = useState('08:00');
   const [endTime, setEndTime] = useState('16:00');
   const [maxPatients, setMaxPatients] = useState(20);
   const [isActive, setIsActive] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     if (schedule) {
@@ -79,9 +86,15 @@ export default function ScheduleForm({ schedule, onSubmit, onClose, loading }: S
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-[#1a1d23]/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+  const modalContent = (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 bg-[#1a1d23]/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl"
+      >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-[#1a1d23]">
             {schedule?.id ? 'Edit Jadwal' : 'Tambah Jadwal'}
@@ -176,4 +189,8 @@ export default function ScheduleForm({ schedule, onSubmit, onClose, loading }: S
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+
+  return createPortal(modalContent, document.body);
 }

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { adminAPI, doctorsAPI } from '@/lib/api';
 import ScheduleForm, { ScheduleFormData } from '@/components/admin/ScheduleForm';
+import { useToast } from '@/components/admin/ToastProvider';
 
 const Icons = {
   Hospital: ({ className = 'w-6 h-6' }: { className?: string }) => (
@@ -110,6 +111,7 @@ const gradients = [
 
 export default function AdminDoctorDetailPage() {
   const params = useParams();
+  const { showToast } = useToast();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,12 +127,6 @@ export default function AdminDoctorDetailPage() {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
   const [scheduleSaving, setScheduleSaving] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-
-  const showToast = (message: string, type: 'success' | 'error') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   const fetchDoctor = async () => {
     try {
@@ -372,16 +368,6 @@ export default function AdminDoctorDetailPage() {
           onClose={() => setShowScheduleModal(false)}
           loading={scheduleSaving}
         />
-      )}
-
-      {/* Toast */}
-      {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg ${
-          toast.type === 'success' ? 'bg-[#059669] text-white' : 'bg-[#dc2626] text-white'
-        }`}>
-          {toast.type === 'success' ? <Icons.CheckCircle /> : <Icons.AlertCircle />}
-          <span>{toast.message}</span>
-        </div>
       )}
     </div>
   );

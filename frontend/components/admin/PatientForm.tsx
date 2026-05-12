@@ -67,33 +67,11 @@ export default function PatientForm({ patient, onSubmit, onClose, loading }: Pat
   const modalContent = (
     <div
       onClick={handleBackdropClick}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(26, 29, 35, 0.5)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-      }}
+      className="fixed inset-0 bg-[#1a1d23]/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: 'white',
-          borderRadius: '16px',
-          width: '100%',
-          maxWidth: '448px',
-          padding: '24px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          position: 'relative',
-          zIndex: 10000,
-        }}
+        className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl"
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-[#1a1d23]">
