@@ -5,90 +5,90 @@ import { useState, useEffect } from 'react';
 
 // SVG Icons
 const Icons = {
-  Hospital: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
+  Hospital: ({ className = 'w-7 h-7' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M9 22V12h6v10M12 9v6" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
-  Search: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+  Search: ({ className = 'w-6 h-6' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <circle cx="11" cy="11" r="8"/>
       <path d="M21 21l-4.35-4.35"/>
     </svg>
   ),
-  Calendar: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+  Calendar: ({ className = 'w-6 h-6' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
       <path d="M16 2v4M8 2v4M3 10h18"/>
     </svg>
   ),
-  Ticket: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+  Ticket: ({ className = 'w-6 h-6' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M2 9a3 3 0 110 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 110-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z"/>
     </svg>
   ),
-  Clock: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+  Clock: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 6v6l4 2"/>
     </svg>
   ),
-  Location: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+  Location: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/>
       <circle cx="12" cy="10" r="3"/>
     </svg>
   ),
-  Phone: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+  Phone: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
     </svg>
   ),
-  ArrowRight: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+  ArrowRight: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M5 12h14M12 5l7 7-7 7"/>
     </svg>
   ),
-  ArrowUpRight: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+  ArrowUpRight: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <path d="M7 17L17 7M7 7h10v10"/>
     </svg>
   ),
-  Check: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
+  Check: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
       <path d="M20 6L9 17l-5-5"/>
     </svg>
   ),
-  Shield: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+  Shield: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
   ),
-  Heart: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+  Heart: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
     </svg>
   ),
-  Activity: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5">
+  Activity: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
     </svg>
   ),
-  Star: () => (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+  Star: ({ className = 'w-5 h-5' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
     </svg>
   ),
-  Users: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+  Users: ({ className = 'w-6 h-6' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
       <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
     </svg>
   ),
-  Sparkle: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6">
+  Sparkle: ({ className = 'w-6 h-6' }: { className?: string }) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className={className}>
       <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/>
     </svg>
   ),
@@ -153,7 +153,9 @@ export default function Home() {
               <Link href="/register" className="group relative px-6 py-3 bg-[#0d9488] text-white text-sm font-semibold rounded-full hover:bg-[#0f766e] transition-all duration-300 hover:shadow-lg hover:shadow-[#0d9488]/25 hover:-translate-y-0.5 active:translate-y-0">
                 <span className="relative z-10 flex items-center gap-2">
                   Daftar
-                  <Icons.ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  <span className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300">
+                    <Icons.ArrowRight />
+                  </span>
                 </span>
               </Link>
             </div>
@@ -282,11 +284,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-center pt-4">
-                        <div className="w-24 h-24 bg-[#1a1d23] rounded-xl flex items-center justify-center">
-                          <div className="w-20 h-20 bg-white rounded-lg" />
-                        </div>
-                      </div>
+                     
                     </div>
                   </div>
 
