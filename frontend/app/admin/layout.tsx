@@ -5,6 +5,8 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import Sidebar, { MobileSidebarOverlay } from '@/components/admin/Sidebar';
+import { ToastProvider } from '@/components/admin/ToastProvider';
+
 
 // SVG Icons
 const Icons = {
@@ -195,7 +197,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Page Content */}
         <main className="p-4 lg:p-6">
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </main>
       </div>
     </div>

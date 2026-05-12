@@ -5,6 +5,7 @@ import Link from 'next/link';
 import PatientTable from '@/components/admin/PatientTable';
 import PatientForm from '@/components/admin/PatientForm';
 import { adminAPI } from '@/lib/api';
+import { useToast } from '@/components/admin/ToastProvider';
 
 const Icons = {
   ArrowLeft: () => (
@@ -43,18 +44,6 @@ const Icons = {
       <line x1="12" y1="16" x2="12.01" y2="16"/>
     </svg>
   ),
-  CheckCircle: () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-      <path d="M22 4L12 14.01l-3-3"/>
-    </svg>
-  ),
-  X: () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <line x1="18" y1="6" x2="6" y2="18"/>
-      <line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  ),
 };
 
 interface Patient {
@@ -67,6 +56,7 @@ interface Patient {
 }
 
 export default function AdminPatientsPage() {
+  const { showToast } = useToast();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +66,6 @@ export default function AdminPatientsPage() {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const fetchPatients = useCallback(async () => {
     setLoading(true);
@@ -117,10 +106,10 @@ export default function AdminPatientsPage() {
     if (!confirm('Yakin ingin menonaktifkan pasien ini?')) return;
     try {
       await adminAPI.deactivatePatient(id);
-      setToast({ message: 'Pasien berhasil dinonaktifkan', type: 'success' });
+      showToast('Pasien berhasil dinonaktifkan', 'success');
       fetchPatients();
     } catch (err: any) {
-      setToast({ message: err.response?.data?.message || 'Gagal menonaktifkan pasien', type: 'error' });
+      showToast(err.response?.data?.message || 'Gagal menonaktifkan pasien', 'error');
     }
   };
 
@@ -128,12 +117,12 @@ export default function AdminPatientsPage() {
     if (!selectedPatient) return;
     try {
       await adminAPI.updatePatient(selectedPatient.id, data);
-      setToast({ message: 'Data pasien berhasil diperbarui', type: 'success' });
+      showToast('Data pasien berhasil diperbarui', 'success');
       setShowEditModal(false);
       setSelectedPatient(null);
       fetchPatients();
     } catch (err: any) {
-      setToast({ message: err.response?.data?.message || 'Gagal memperbarui pasien', type: 'error' });
+      showToast(err.response?.data?.message || 'Gagal memperbarui pasien', 'error');
     }
   };
 
@@ -143,9 +132,6 @@ export default function AdminPatientsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            {/* <Link href="/admin/dashboard" className="text-[#6b7280] hover:text-[#0d9488] transition-colors">
-              <Icons.ArrowLeft />
-            </Link> */}
             <h1 className="text-2xl md:text-3xl font-bold text-[#1a1d23]">Kelola Pasien</h1>
           </div>
           <p className="text-[#6b7280]">Daftar semua pasien terdaftar</p>
@@ -239,17 +225,6 @@ export default function AdminPatientsPage() {
           onSubmit={handleSubmitEdit}
           onClose={() => { setShowEditModal(false); setSelectedPatient(null); }}
         />
-      )}
-
-      {/* Toast */}
-      {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg ${
-          toast.type === 'success' ? 'bg-[#059669] text-white' : 'bg-[#dc2626] text-white'
-        }`}>
-          {toast.type === 'success' ? <Icons.CheckCircle /> : <Icons.AlertCircle />}
-          <span>{toast.message}</span>
-          <button onClick={() => setToast(null)} className="ml-2"><Icons.X /></button>
-        </div>
       )}
     </div>
   );

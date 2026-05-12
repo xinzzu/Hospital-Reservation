@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { adminAPI, reservationsAPI } from '@/lib/api';
 import ReservationTable from '@/components/admin/ReservationTable';
+import { useToast } from '@/components/admin/ToastProvider';
 
 // SVG Icons
 const Icons = {
@@ -47,19 +48,6 @@ const Icons = {
       <circle cx="12" cy="12" r="10" />
       <line x1="12" y1="8" x2="12" y2="12" />
       <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-  ),
-  CheckCircle: ({ className = 'w-5 h-5' }: { className?: string }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-      <path d="M22 4L12 14.01l-3-3" />
-    </svg>
-  ),
-  XCircle: ({ className = 'w-5 h-5' }: { className?: string }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="10" />
-      <line x1="15" y1="9" x2="9" y2="15" />
-      <line x1="9" y1="9" x2="15" y2="15" />
     </svg>
   ),
   Calendar: ({ className = 'w-5 h-5' }: { className?: string }) => (
@@ -130,30 +118,8 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   );
 }
 
-// Toast notification component
-function Toast({ message, type, onClose }: { message: string; type: 'success' | 'error'; onClose: () => void }) {
-  useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div className="fixed bottom-6 right-6 lg:right-24 z-50 animate-slide-up">
-      <div className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg ${
-        type === 'success' ? 'bg-[#059669] text-white' : 'bg-[#dc2626] text-white'
-      }`}>
-        {type === 'success' ? <Icons.CheckCircle /> : <Icons.XCircle />}
-        <span className="font-medium">{message}</span>
-        <button onClick={onClose} className="ml-2 hover:opacity-80 cursor-pointer">
-          <Icons.X />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function AdminReservationsPage() {
-  const { user } = useAuthStore();
+  const { showToast } = useToast();
 
   // State
   const [reservations, setReservations] = useState<ReservationWithDetails[]>([]);
@@ -176,9 +142,6 @@ export default function AdminReservationsPage() {
     total_pages: 0,
   });
 
-  // Toast
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-
   // Fetch reservations
   const fetchReservations = useCallback(async () => {
     setLoading(true);
@@ -195,7 +158,6 @@ export default function AdminReservationsPage() {
       if (filters.date) params.date = filters.date;
 
       const response = await adminAPI.getReservations(params);
-      // Axios wraps the data, response.data is the API response body
       const apiResponse = response.data as {
         data: ReservationWithDetails[];
         page: number;
@@ -245,7 +207,6 @@ export default function AdminReservationsPage() {
 
   // Handle status change
   const handleStatusChange = async (code: string, newStatus: string) => {
-    // Find the current status
     const reservation = reservations.find((r) => r.queue_code === code);
     if (!reservation || reservation.status === newStatus) return;
 
@@ -253,18 +214,14 @@ export default function AdminReservationsPage() {
 
     try {
       await reservationsAPI.updateStatus(code, newStatus);
-      setToast({ message: `Status reservasi ${code} berhasil diperbarui`, type: 'success' });
+      showToast(`Status reservasi ${code} berhasil diperbarui`, 'success');
 
-      // Update local state
       setReservations((prev) =>
         prev.map((r) => (r.queue_code === code ? { ...r, status: newStatus } : r))
       );
     } catch (err: any) {
       console.error('Failed to update status:', err);
-      setToast({
-        message: err.response?.data?.message || 'Gagal memperbarui status reservasi',
-        type: 'error',
-      });
+      showToast(err.response?.data?.message || 'Gagal memperbarui status reservasi', 'error');
     } finally {
       setUpdatingCode(null);
     }
@@ -474,15 +431,6 @@ export default function AdminReservationsPage() {
             </div>
           )}
         </>
-      )}
-
-      {/* Toast notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
       )}
     </div>
   );
