@@ -1,21 +1,21 @@
 package handlers
 
 import (
-	"hospital-reservation/internal/repository"
+	"hospital-reservation/internal/services"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type HospitalHandler struct {
-	hospitalRepo *repository.HospitalRepository
+	hospitalService *services.HospitalService
 }
 
-func NewHospitalHandler(hospitalRepo *repository.HospitalRepository) *HospitalHandler {
-	return &HospitalHandler{hospitalRepo: hospitalRepo}
+func NewHospitalHandler(hospitalService *services.HospitalService) *HospitalHandler {
+	return &HospitalHandler{hospitalService: hospitalService}
 }
 
 func (h *HospitalHandler) GetInfo(c *fiber.Ctx) error {
-	info, err := h.hospitalRepo.GetInfo()
+	info, err := h.hospitalService.GetInfo()
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Hospital info not found",

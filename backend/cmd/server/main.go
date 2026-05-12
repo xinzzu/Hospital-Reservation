@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
+	"hospital-reservation/internal/cache"
 	"hospital-reservation/internal/config"
 	"hospital-reservation/internal/database"
 	"hospital-reservation/internal/handlers"
@@ -29,6 +30,26 @@ func main() {
 
 	log.Println("Connected to database successfully")
 
+	// Initialize Redis cache
+	log.Printf("Attempting to connect to Redis at %s:%s (enabled: %v)", cfg.RedisHost, cfg.RedisPort, cfg.RedisEnabled)
+	redisCache, err := cache.NewRedisCache(
+		cfg.RedisHost,
+		cfg.RedisPort,
+		cfg.RedisPassword,
+		cfg.RedisDB,
+		cfg.RedisEnabled,
+	)
+	if err != nil {
+		log.Printf("Warning: Failed to connect to Redis: %v. Continuing without cache.", err)
+		// Create disabled cache instance
+		redisCache = &cache.RedisCache{}
+	} else if cfg.RedisEnabled {
+		log.Println("Connected to Redis successfully")
+		defer redisCache.Close()
+	} else {
+		log.Println("Redis caching is disabled")
+	}
+
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	doctorRepo := repository.NewDoctorRepository(db)
@@ -40,11 +61,12 @@ func main() {
 
 	// Initialize services
 	authService := services.NewAuthService(userRepo, passwordResetRepo, cfg)
-	doctorService := services.NewDoctorService(doctorRepo)
+	doctorService := services.NewDoctorService(doctorRepo, redisCache)
 	reservationService := services.NewReservationService(reservationRepo, doctorRepo)
 	adminService := services.NewAdminService(adminRepo)
 	patientService := services.NewPatientService(patientRepo)
 	userService := services.NewUserService(userRepo)
+	hospitalService := services.NewHospitalService(hospitalRepo, redisCache)
 
 	// Initialize middleware
 	jwtMiddleware := middleware.NewJWTMiddleware(cfg.JWTSecret)
@@ -53,7 +75,7 @@ func main() {
 	authHandler := handlers.NewAuthHandler(authService, jwtMiddleware)
 	doctorHandler := handlers.NewDoctorHandler(doctorService)
 	reservationHandler := handlers.NewReservationHandler(reservationService)
-	hospitalHandler := handlers.NewHospitalHandler(hospitalRepo)
+	hospitalHandler := handlers.NewHospitalHandler(hospitalService)
 	patientHandler := handlers.NewPatientHandler(patientService)
 	userHandler := handlers.NewUserHandler(userService)
 	adminHandler := handlers.NewAdminHandler(adminService, doctorService, patientHandler)

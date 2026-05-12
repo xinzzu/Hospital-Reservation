@@ -28,8 +28,23 @@ services:
       DB_NAME: hospital_db
       JWT_SECRET: supersecretkey2024
       PORT: "8080"
+      # Redis Configuration
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+      REDIS_DB: "0"
+      REDIS_ENABLED: "true"
+      # Database Connection Pool
+      DB_MAX_OPEN_CONNS: "25"
+      DB_MAX_IDLE_CONNS: "5"
+      DB_CONN_MAX_LIFETIME: "5m"
+      DB_CONN_MAX_IDLE_TIME: "2m"
+      # Environment
+      APP_ENV: "development"
     depends_on:
       postgres-db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
 
@@ -44,5 +59,21 @@ services:
       - go-backend
     restart: unless-stopped
 
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  redis_data:

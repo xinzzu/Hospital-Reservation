@@ -14,7 +14,11 @@ func NewDoctorRepository(db *sql.DB) *DoctorRepository {
 }
 
 func (r *DoctorRepository) FindAll() ([]models.Doctor, error) {
-	query := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at FROM doctors ORDER BY name`
+	query := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at
+		FROM doctors
+		WHERE is_active = true
+		ORDER BY name
+		LIMIT 100`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -35,7 +39,9 @@ func (r *DoctorRepository) FindAll() ([]models.Doctor, error) {
 
 func (r *DoctorRepository) FindByID(id int) (*models.Doctor, error) {
 	doctor := &models.Doctor{}
-	query := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at FROM doctors WHERE id = $1`
+	query := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at
+		FROM doctors
+		WHERE id = $1 AND is_active = true`
 	err := r.db.QueryRow(query, id).Scan(
 		&doctor.ID, &doctor.UserID, &doctor.Name, &doctor.Specialization,
 		&doctor.Room, &doctor.Bio, &doctor.PhotoURL, &doctor.CreatedAt,
@@ -47,10 +53,12 @@ func (r *DoctorRepository) FindByID(id int) (*models.Doctor, error) {
 }
 
 func (r *DoctorRepository) Search(query string) ([]models.Doctor, error) {
-	sqlQuery := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at 
-		FROM doctors 
-		WHERE LOWER(name) LIKE LOWER($1) OR LOWER(specialization) LIKE LOWER($1)
-		ORDER BY name`
+	sqlQuery := `SELECT id, user_id, name, specialization, room, bio, photo_url, created_at
+		FROM doctors
+		WHERE is_active = true
+		  AND (LOWER(name) LIKE LOWER($1) OR LOWER(specialization) LIKE LOWER($1))
+		ORDER BY name
+		LIMIT 100`
 	searchTerm := "%" + query + "%"
 	rows, err := r.db.Query(sqlQuery, searchTerm)
 	if err != nil {
@@ -71,8 +79,10 @@ func (r *DoctorRepository) Search(query string) ([]models.Doctor, error) {
 }
 
 func (r *DoctorRepository) GetSchedules(doctorID int) ([]models.Schedule, error) {
-	query := `SELECT id, doctor_id, day_of_week, start_time::text, end_time::text, max_patients, is_active 
-		FROM schedules WHERE doctor_id = $1 AND is_active = true ORDER BY day_of_week, start_time`
+	query := `SELECT id, doctor_id, day_of_week, start_time::text, end_time::text, max_patients, is_active
+		FROM schedules
+		WHERE doctor_id = $1 AND is_active = true
+		ORDER BY day_of_week, start_time`
 	rows, err := r.db.Query(query, doctorID)
 	if err != nil {
 		return nil, err
