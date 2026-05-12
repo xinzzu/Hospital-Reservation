@@ -1,33 +1,33 @@
 # 🏥 Hospital Queue Reservation System
 
-Sistem reservasi antrean rumah sakit berbasis web yang memungkinkan pasien untuk mencari dokter, membuat reservasi, dan mendapatkan tiket digital dengan QR code.
+A web-based hospital queue reservation system that allows patients to search for doctors, make reservations, and receive digital tickets with QR codes.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## 🎯 Fitur Utama
+## 🎯 Key Features
 
-- ✅ **Register & Login** dengan JWT authentication
-- ✅ **Dashboard Pasien** dengan info rumah sakit
-- ✅ **Pencarian Dokter** berdasarkan nama/spesialisasi
-- ✅ **Detail Dokter** dengan jadwal praktik
-- ✅ **Reservasi Online** dengan validasi jadwal
-- ✅ **Tiket Digital** dengan QR code
-- ✅ **Monitoring Status** reservasi real-time
-- ✅ **Admin Dashboard** untuk staff rumah sakit
-- ✅ **Admin Dashboard** untuk staff rumah sakit
+- ✅ **Register & Login** with JWT authentication
+- ✅ **Patient Dashboard** with hospital information
+- ✅ **Doctor Search** by name/specialization
+- ✅ **Doctor Detail** with practice schedule
+- ✅ **Online Reservation** with schedule validation
+- ✅ **Digital Ticket** with QR code
+- ✅ **Status Monitoring** for real-time reservation tracking
+- ✅ **Admin Dashboard** for hospital staff
+- ✅ **Admin Reservation Detail** with full information
 
 ## 🛠️ Tech Stack
 
-| Layer | Teknologi |
-|-------|-----------|
+| Layer | Technology |
+|-------|------------|
 | Frontend | Next.js 14 (App Router) + Tailwind CSS + Zustand |
 | Backend | Go (Fiber framework) |
 | Database | PostgreSQL 15 |
 | Container | Docker + Docker Compose |
 | Auth | JWT |
 
-## 📁 Struktur Direktori
+## 📁 Directory Structure
 
 ```
 hospital-reservation/
@@ -35,27 +35,27 @@ hospital-reservation/
 │   ├── cmd/server/              # Entry point
 │   ├── internal/
 │   │   ├── config/              # Configuration
-│   │   ├── database/           # Database connection
-│   │   ├── handlers/           # HTTP handlers
-│   │   ├── middleware/         # JWT middleware
-│   │   ├── models/             # Data models
-│   │   ├── repository/         # Database queries
-│   │   └── services/          # Business logic
-│   ├── migrations/             # SQL migrations
+│   │   ├── database/            # Database connection
+│   │   ├── handlers/            # HTTP handlers
+│   │   ├── middleware/          # JWT middleware
+│   │   ├── models/              # Data models
+│   │   ├── repository/          # Database queries
+│   │   └── services/            # Business logic
+│   ├── migrations/              # SQL migrations
 │   ├── scripts/                 # Utility scripts
 │   └── Dockerfile
 │
 ├── frontend/                    # Next.js Frontend
 │   ├── app/                     # App Router pages
-│   ├── components/             # React components
-│   ├── store/                  # Zustand stores
-│   ├── lib/                    # API utilities
+│   ├── components/              # React components
+│   ├── store/                   # Zustand stores
+│   ├── lib/                     # API utilities
 │   └── Dockerfile
 │
-├── docs/                       # Documentation
-├── docker-compose.yml          # Docker Compose
-├── README.md                   # This file
-└── .env.example               # Environment template
+├── docs/                        # Documentation
+├── docker-compose.yml            # Docker Compose
+├── README.md                    # This file
+└── .env.example                 # Environment template
 ```
 
 ## 🚀 Quick Start
@@ -63,7 +63,7 @@ hospital-reservation/
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) & Docker Compose
-- ATAU
+- OR
 - [Go 1.21+](https://go.dev/dl/)
 - [Node.js 18+](https://nodejs.org/)
 - [PostgreSQL 15](https://www.postgresql.org/)
@@ -108,7 +108,7 @@ npm install
 npm run dev
 ```
 
-## 🌐 Akses Aplikasi
+## 🌐 Application Access
 
 | Service | URL |
 |---------|-----|
@@ -123,32 +123,34 @@ npm run dev
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Register pasien baru |
+| POST | `/api/auth/register` | Register new patient |
 | POST | `/api/auth/login` | Login, return JWT token |
 | GET | `/api/auth/me` | Get current user profile |
+| POST | `/api/auth/forgot-password` | Request password reset |
+| POST | `/api/auth/reset-password` | Reset password with token |
 
 ### Hospital
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/hospital/info` | Get info umum rumah sakit |
+| GET | `/api/hospital/info` | Get hospital general information |
 
 ### Doctors
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/doctors` | List semua dokter (+ query: ?search=&specialization=) |
-| GET | `/api/doctors/:id` | Detail dokter + jadwal |
-| GET | `/api/doctors/:id/schedules` | Jadwal dokter per tanggal |
-| GET | `/api/doctors/specializations` | List spesialisasi |
+| GET | `/api/doctors` | List all doctors (+ query: ?search=&specialization=) |
+| GET | `/api/doctors/:id` | Doctor detail with schedules |
+| GET | `/api/doctors/:id/schedules` | Doctor schedules by date |
+| GET | `/api/doctors/specializations` | List all specializations |
 
 ### Reservations
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/reservations` | Buat reservasi baru |
-| GET | `/api/reservations/me` | Riwayat reservasi pasien |
-| GET | `/api/reservations/:code` | Cek tiket by queue_code |
+| POST | `/api/reservations` | Create new reservation |
+| GET | `/api/reservations/me` | Patient's reservation history |
+| GET | `/api/reservations/:code` | Get ticket by queue_code |
 | PATCH | `/api/reservations/:code/status` | Update status (admin) |
 
 ### Admin API
@@ -156,27 +158,28 @@ npm run dev
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/admin/stats` | Dashboard statistics |
-| GET | `/api/admin/reservations` | List semua reservasi (filterable) |
-| GET | `/api/admin/doctors` | List semua dokter |
-
-### Admin API
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/admin/stats` | Dashboard statistics |
-| GET | `/api/admin/reservations` | List semua reservasi (filterable) |
-| GET | `/api/admin/doctors` | List semua dokter |
-
+| GET | `/api/admin/reservations` | List all reservations (filterable) |
+| GET | `/api/admin/reservations/:id` | Reservation detail |
+| GET | `/api/admin/doctors` | List all doctors |
+| PUT | `/api/admin/doctors/:id` | Update doctor |
+| DELETE | `/api/admin/doctors/:id` | Delete doctor |
+| POST | `/api/admin/doctors/:id/schedules` | Add doctor schedule |
+| PUT | `/api/admin/schedules/:id` | Update schedule |
+| DELETE | `/api/admin/schedules/:id` | Delete schedule |
+| GET | `/api/admin/patients` | List all patients |
+| GET | `/api/admin/patients/:id` | Patient detail |
+| PUT | `/api/admin/patients/:id` | Update patient |
+| POST | `/api/admin/patients/:id/deactivate` | Deactivate patient |
 
 ## 📋 Queue Code Format
 
-Format: `[KODE-DOKTER][TANGGAL][NOMOR]`
+Format: `[DOCTOR-CODE][DATE][NUMBER]`
 
-**Contoh:** `DR01-100524-007`
+**Example:** `DR01-100524-007`
 
-- `DR01` — Kode dokter (2 digit)
-- `100524` — Tanggal reservasi (DDMMYY)
-- `007` — Nomor antrean (3 digit)
+- `DR01` — Doctor code (2 digits)
+- `100524` — Reservation date (DDMMYY)
+- `007` — Queue number (3 digits)
 
 ## 👤 Default Test Accounts
 
@@ -185,27 +188,28 @@ Format: `[KODE-DOKTER][TANGGAL][NOMOR]`
 |-------|----------|------|
 | admin@medicare.co.id | admin123 | Administrator |
 
-**Akses:** http://localhost:3000/admin/login
+**Access:** http://localhost:3000/admin/login
 
 ### Doctor Accounts
 | Email | Password | Role |
 |-------|----------|------|
-| sarah@hospital.com | doctor123 | Dokter |
-| ahmad@hospital.com | doctor123 | Dokter |
-| lisa@hospital.com | doctor123 | Dokter |
+| sarah@hospital.com | doctor123 | Doctor |
+| ahmad@hospital.com | doctor123 | Doctor |
+| lisa@hospital.com | doctor123 | Doctor |
 
 ### Patient Account
-> 💡 Pasien dapat mendaftar langsung melalui UI pada halaman `/register`
+> 💡 Patients can register directly through the UI at `/register`
 
 ## 🗄️ Database Schema
 
 ### Tables
 
-- **users** - Data pasien dan dokter
-- **doctors** - Profil dokter
-- **schedules** - Jadwal praktik dokter
-- **reservations** - Data reservasi dengan queue code
-- **hospital_info** - Informasi rumah sakit
+- **users** - Patient and doctor data
+- **doctors** - Doctor profiles
+- **schedules** - Doctor practice schedules
+- **reservations** - Reservation data with queue code
+- **hospital_info** - Hospital information
+- **password_resets** - Password reset tokens
 
 ### ER Diagram Concept
 
