@@ -44,15 +44,7 @@ func (h *FHIRHandler) GetPatientSummary(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "collection",
-		"entry": []fiber.Map{
-			{"resource": summary.Patient},
-			{"resource": summary.Conditions},
-			{"resource": summary.Observations},
-			{"resource": summary.Medications},
-			{"resource": summary.Allergies},
-		},
+		"data": summary,
 	})
 }
 
@@ -68,10 +60,7 @@ func (h *FHIRHandler) GetConditions(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "searchset",
-		"total":        len(conditions),
-		"entry":        conditions,
+		"data": conditions,
 	})
 }
 
@@ -93,8 +82,7 @@ func (h *FHIRHandler) CreateCondition(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"resourceType": "Condition",
-		"data":         condition,
+		"data": condition,
 	})
 }
 
@@ -111,10 +99,7 @@ func (h *FHIRHandler) GetObservations(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "searchset",
-		"total":        len(observations),
-		"entry":        observations,
+		"data": observations,
 	})
 }
 
@@ -130,10 +115,7 @@ func (h *FHIRHandler) GetObservationsByCategory(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "searchset",
-		"total":        len(observations),
-		"entry":        observations,
+		"data": observations,
 	})
 }
 
@@ -155,8 +137,7 @@ func (h *FHIRHandler) CreateObservation(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"resourceType": "Observation",
-		"data":         observation,
+		"data": observation,
 	})
 }
 
@@ -172,10 +153,7 @@ func (h *FHIRHandler) GetMedications(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "searchset",
-		"total":        len(medications),
-		"entry":        medications,
+		"data": medications,
 	})
 }
 
@@ -197,8 +175,7 @@ func (h *FHIRHandler) CreateMedication(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"resourceType": "MedicationRequest",
-		"data":         medication,
+		"data": medication,
 	})
 }
 
@@ -214,10 +191,7 @@ func (h *FHIRHandler) GetAllergies(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"resourceType": "Bundle",
-		"type":         "searchset",
-		"total":        len(allergies),
-		"entry":        allergies,
+		"data": allergies,
 	})
 }
 
@@ -239,8 +213,7 @@ func (h *FHIRHandler) CreateAllergy(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"resourceType": "AllergyIntolerance",
-		"data":         allergy,
+		"data": allergy,
 	})
 }
 

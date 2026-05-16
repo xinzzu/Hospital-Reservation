@@ -12,7 +12,7 @@ export default function PrescriptionsPage() {
     const fetchMedications = async () => {
       try {
         const response = await fhirAPI.getMedications();
-        setMedications(response.data.entry || []);
+        setMedications(response.data || []);
       } catch (err) {
         console.error('Failed to fetch medications:', err);
         setError('Gagal memuat resep. Pastikan Anda sudah login.');

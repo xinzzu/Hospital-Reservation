@@ -12,7 +12,7 @@ export default function MedicalRecordsPage() {
     const fetchConditions = async () => {
       try {
         const response = await fhirAPI.getConditions();
-        setConditions(response.data.entry || []);
+        setConditions(response.data || []);
       } catch (err) {
         console.error('Failed to fetch conditions:', err);
         setError('Gagal memuat rekam medis. Pastikan Anda sudah login.');

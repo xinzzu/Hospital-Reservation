@@ -12,7 +12,7 @@ export default function AllergiesPage() {
     const fetchAllergies = async () => {
       try {
         const response = await fhirAPI.getAllergies();
-        setAllergies(response.data.entry || []);
+        setAllergies(response.data || []);
       } catch (err) {
         console.error('Failed to fetch allergies:', err);
         setError('Gagal memuat data alergi. Pastikan Anda sudah login.');

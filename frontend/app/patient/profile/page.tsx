@@ -13,7 +13,7 @@ export default function PatientProfilePage() {
     const fetchProfile = async () => {
       try {
         const response = await userAPI.getProfile();
-        setUser(response.data);
+        setUser(response.data.profile);
       } catch (err) {
         console.error('Failed to fetch profile:', err);
       } finally {

@@ -35,7 +35,7 @@ export default function PatientAppointmentsPage() {
     const fetchAppointments = async () => {
       try {
         const response = await reservationsAPI.getMyReservations();
-        setAppointments(response.data || []);
+        setAppointments(response.data.reservations || []);
       } catch (err) {
         console.error('Failed to fetch appointments:', err);
         setError('Gagal memuat jadwal kunjungan. Pastikan Anda sudah login.');

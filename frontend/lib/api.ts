@@ -308,7 +308,7 @@ export const fhirAPI = {
     api.get('/api/fhir/me'),
 
   // Conditions
-  getConditions: (): Promise<{ data: { entry: FHIRCondition[]; total: number } }> =>
+  getConditions: (): Promise<{ data: FHIRCondition[] }> =>
     api.get('/api/fhir/conditions'),
   createCondition: (data: {
     clinicalStatus?: string;
@@ -323,7 +323,7 @@ export const fhirAPI = {
   }) => api.post('/api/fhir/conditions', data),
 
   // Observations
-  getObservations: (category?: string): Promise<{ data: { entry: FHIRObservation[]; total: number } }> =>
+  getObservations: (category?: string): Promise<{ data: FHIRObservation[] }> =>
     api.get('/api/fhir/observations', { params: { category } }),
   createObservation: (data: {
     status?: string;
@@ -343,7 +343,7 @@ export const fhirAPI = {
   }) => api.post('/api/fhir/observations', data),
 
   // Medications
-  getMedications: (): Promise<{ data: { entry: FHIRMedicationRequest[]; total: number } }> =>
+  getMedications: (): Promise<{ data: FHIRMedicationRequest[] }> =>
     api.get('/api/fhir/medications'),
   createMedication: (data: {
     status?: string;
@@ -360,7 +360,7 @@ export const fhirAPI = {
   }) => api.post('/api/fhir/medications', data),
 
   // Allergies
-  getAllergies: (): Promise<{ data: { entry: FHIRAllergyIntolerance[]; total: number } }> =>
+  getAllergies: (): Promise<{ data: FHIRAllergyIntolerance[] }> =>
     api.get('/api/fhir/allergies'),
   createAllergy: (data: {
     clinicalStatus?: string;

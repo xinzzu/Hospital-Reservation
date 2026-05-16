@@ -98,16 +98,20 @@ func (r *FHIRObservationRepository) FindByPatientID(patientID int, category stri
 		var o models.FHIRObservation
 		var componentJSON sql.NullString
 		var encounterID sql.NullInt64
+		var effectiveDate sql.NullTime
 
 		err := rows.Scan(
 			&o.ID, &o.PatientID, &o.Status, &o.Category, &o.CodeSystem, &o.CodeCode,
 			&o.CodeDisplay, &o.ValueType, &o.ValueQuantity, &o.ValueQuantityUnit,
-			&o.ValueString, &o.EffectiveDate, &o.Interpretation,
+			&o.ValueString, &effectiveDate, &o.Interpretation,
 			&o.ReferenceRangeLow, &o.ReferenceRangeHigh, &o.ReferenceRangeText,
 			&componentJSON, &encounterID, &o.FHIRID, &o.CreatedAt, &o.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
+		}
+		if effectiveDate.Valid {
+			o.EffectiveDate = &effectiveDate.Time
 		}
 		if componentJSON.Valid {
 			o.ComponentJSON = componentJSON.String
@@ -130,12 +134,28 @@ func (r *FHIRObservationRepository) FindByID(id int) (*models.FHIRObservation, e
 			   COALESCE(component_json, ''), COALESCE(encounter_id, 0), fhir_id, created_at, updated_at
 		FROM fhir_observations WHERE id = $1
 	`
+	var componentJSON sql.NullString
+	var encounterID sql.NullInt64
+	var effectiveDate sql.NullTime
+
 	err := r.db.QueryRow(query, id).Scan(
 		&obs.ID, &obs.PatientID, &obs.Status, &obs.Category, &obs.CodeSystem, &obs.CodeCode,
 		&obs.CodeDisplay, &obs.ValueType, &obs.ValueQuantity, &obs.ValueQuantityUnit,
-		&obs.ValueString, &obs.EffectiveDate, &obs.Interpretation,
+		&obs.ValueString, &effectiveDate, &obs.Interpretation,
 		&obs.ReferenceRangeLow, &obs.ReferenceRangeHigh, &obs.ReferenceRangeText,
-		&obs.ComponentJSON, &obs.EncounterID, &obs.FHIRID, &obs.CreatedAt, &obs.UpdatedAt,
+		&componentJSON, &encounterID, &obs.FHIRID, &obs.CreatedAt, &obs.UpdatedAt,
 	)
-	return obs, err
+	if err != nil {
+		return nil, err
+	}
+	if effectiveDate.Valid {
+		obs.EffectiveDate = &effectiveDate.Time
+	}
+	if componentJSON.Valid {
+		obs.ComponentJSON = componentJSON.String
+	}
+	if encounterID.Valid {
+		obs.EncounterID = int(encounterID.Int64)
+	}
+	return obs, nil
 }

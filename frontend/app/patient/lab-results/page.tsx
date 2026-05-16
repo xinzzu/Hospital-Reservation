@@ -13,7 +13,7 @@ export default function LabResultsPage() {
     const fetchObservations = async () => {
       try {
         const response = await fhirAPI.getObservations(selectedCategory || undefined);
-        setObservations(response.data.entry || []);
+        setObservations(response.data || []);
       } catch (err) {
         console.error('Failed to fetch observations:', err);
         setError('Gagal memuat hasil lab. Pastikan Anda sudah login.');
