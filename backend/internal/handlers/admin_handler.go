@@ -5,6 +5,7 @@ import (
 
 	"hospital-reservation/internal/middleware"
 	"hospital-reservation/internal/models"
+	"hospital-reservation/internal/repository"
 	"hospital-reservation/internal/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,7 +17,19 @@ type AdminHandler struct {
 	patientHandler *PatientHandler
 }
 
-func NewAdminHandler(adminService *services.AdminService, doctorService *services.DoctorService, patientHandler *PatientHandler) *AdminHandler {
+func NewAdminHandler(
+	adminService *services.AdminService,
+	doctorService *services.DoctorService,
+	patientHandler *PatientHandler,
+	fhirService *services.FHIRService,
+	medRepo *repository.FHIRMedicationRepository,
+	allergyRepo *repository.FHIRAllergyRepository,
+) *AdminHandler {
+	// Update patient handler with EHR dependencies
+	patientHandler.FHIRService = fhirService
+	patientHandler.MedRepo = medRepo
+	patientHandler.AllergyRepo = allergyRepo
+
 	return &AdminHandler{
 		adminService:   adminService,
 		doctorService:  doctorService,
@@ -205,4 +218,13 @@ func (h *AdminHandler) RegisterRoutes(app *fiber.App, jwtMiddleware *middleware.
 	admin.Get("/patients/:id", h.patientHandler.GetByID)
 	admin.Put("/patients/:id", h.patientHandler.Update)
 	admin.Post("/patients/:id/deactivate", h.patientHandler.Deactivate)
+
+	// EHR Management routes
+	admin.Get("/patients/:id/ehr", h.patientHandler.GetPatientEHR)
+	admin.Post("/patients/:id/conditions", h.patientHandler.CreateCondition)
+	admin.Post("/patients/:id/observations", h.patientHandler.CreateObservation)
+	admin.Post("/patients/:id/medications", h.patientHandler.CreateMedication)
+	admin.Post("/patients/:id/allergies", h.patientHandler.CreateAllergy)
+	admin.Patch("/medications/:id/status", h.patientHandler.UpdateMedicationStatus)
+	admin.Patch("/allergies/:id/status", h.patientHandler.UpdateAllergyStatus)
 }

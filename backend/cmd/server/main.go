@@ -68,6 +68,19 @@ func main() {
 	userService := services.NewUserService(userRepo)
 	hospitalService := services.NewHospitalService(hospitalRepo, redisCache)
 
+	// Initialize FHIR repositories
+	fhirPatientRepo := repository.NewFHIRPatientRepository(db)
+	fhirConditionRepo := repository.NewFHIRConditionRepository(db)
+	fhirObservationRepo := repository.NewFHIRObservationRepository(db)
+	fhirMedicationRepo := repository.NewFHIRMedicationRepository(db)
+	fhirAllergyRepo := repository.NewFHIRAllergyRepository(db)
+
+	// Initialize FHIR service
+	fhirService := services.NewFHIRService(
+		fhirPatientRepo, fhirConditionRepo, fhirObservationRepo,
+		fhirMedicationRepo, fhirAllergyRepo, reservationRepo,
+	)
+
 	// Initialize middleware
 	jwtMiddleware := middleware.NewJWTMiddleware(cfg.JWTSecret)
 
@@ -76,22 +89,9 @@ func main() {
 	doctorHandler := handlers.NewDoctorHandler(doctorService)
 	reservationHandler := handlers.NewReservationHandler(reservationService)
 	hospitalHandler := handlers.NewHospitalHandler(hospitalService)
-	patientHandler := handlers.NewPatientHandler(patientService)
+	patientHandler := handlers.NewPatientHandler(patientService, fhirService, fhirMedicationRepo, fhirAllergyRepo)
 	userHandler := handlers.NewUserHandler(userService)
-	adminHandler := handlers.NewAdminHandler(adminService, doctorService, patientHandler)
-
-	// FHIR repositories
-	fhirPatientRepo := repository.NewFHIRPatientRepository(db)
-	fhirConditionRepo := repository.NewFHIRConditionRepository(db)
-	fhirObservationRepo := repository.NewFHIRObservationRepository(db)
-	fhirMedicationRepo := repository.NewFHIRMedicationRepository(db)
-	fhirAllergyRepo := repository.NewFHIRAllergyRepository(db)
-
-	// FHIR service
-	fhirService := services.NewFHIRService(
-		fhirPatientRepo, fhirConditionRepo, fhirObservationRepo,
-		fhirMedicationRepo, fhirAllergyRepo, reservationRepo,
-	)
+	adminHandler := handlers.NewAdminHandler(adminService, doctorService, patientHandler, fhirService, fhirMedicationRepo, fhirAllergyRepo)
 
 	// FHIR handler
 	fhirHandler := handlers.NewFHIRHandler(fhirService)

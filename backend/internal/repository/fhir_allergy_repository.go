@@ -93,3 +93,22 @@ func (r *FHIRAllergyRepository) Update(id int, req *models.CreateAllergyRequest)
 	)
 	return err
 }
+
+func (r *FHIRAllergyRepository) FindByID(id int) (*models.FHIRAllergyIntolerance, error) {
+	allergy := &models.FHIRAllergyIntolerance{}
+	query := `
+		SELECT id, patient_id, clinical_status, COALESCE(type, ''), COALESCE(category, ''),
+			   COALESCE(criticality, ''), COALESCE(substance_system, ''), COALESCE(substance_code, ''),
+			   COALESCE(substance_display, ''), COALESCE(reaction_manifestation, ''),
+			   COALESCE(reaction_severity, ''), COALESCE(note, ''), fhir_id, created_at, updated_at
+		FROM fhir_allergies
+		WHERE id = $1
+	`
+	err := r.db.QueryRow(query, id).Scan(
+		&allergy.ID, &allergy.PatientID, &allergy.ClinicalStatus, &allergy.Type, &allergy.Category,
+		&allergy.Criticality, &allergy.SubstanceSystem, &allergy.SubstanceCode, &allergy.SubstanceDisplay,
+		&allergy.ReactionManifestation, &allergy.ReactionSeverity, &allergy.Note, &allergy.FHIRID,
+		&allergy.CreatedAt, &allergy.UpdatedAt,
+	)
+	return allergy, err
+}
