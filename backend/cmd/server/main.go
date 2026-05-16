@@ -80,6 +80,22 @@ func main() {
 	userHandler := handlers.NewUserHandler(userService)
 	adminHandler := handlers.NewAdminHandler(adminService, doctorService, patientHandler)
 
+	// FHIR repositories
+	fhirPatientRepo := repository.NewFHIRPatientRepository(db)
+	fhirConditionRepo := repository.NewFHIRConditionRepository(db)
+	fhirObservationRepo := repository.NewFHIRObservationRepository(db)
+	fhirMedicationRepo := repository.NewFHIRMedicationRepository(db)
+	fhirAllergyRepo := repository.NewFHIRAllergyRepository(db)
+
+	// FHIR service
+	fhirService := services.NewFHIRService(
+		fhirPatientRepo, fhirConditionRepo, fhirObservationRepo,
+		fhirMedicationRepo, fhirAllergyRepo, reservationRepo,
+	)
+
+	// FHIR handler
+	fhirHandler := handlers.NewFHIRHandler(fhirService)
+
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
 		AppName: "Hospital Reservation API",
@@ -108,6 +124,7 @@ func main() {
 	hospitalHandler.RegisterRoutes(app)
 	userHandler.RegisterRoutes(app, jwtMiddleware)
 	adminHandler.RegisterRoutes(app, jwtMiddleware)
+	fhirHandler.RegisterRoutes(app, jwtMiddleware)
 
 	// Start server
 	addr := fmt.Sprintf(":%s", cfg.Port)
